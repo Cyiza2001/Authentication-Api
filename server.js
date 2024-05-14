@@ -1,4 +1,4 @@
-require(".dotenv").config();
+require("dotenv").config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const app = express();
@@ -13,7 +13,7 @@ const posts = [
     title: "post2",
   },
 ];
-app.get("/posts", (req, res) => {
+app.get("/posts", authenticateToken, (req, res) => {
   res.json(posts);
 });
 app.post("/login", (req, res) => {
@@ -23,6 +23,10 @@ app.post("/login", (req, res) => {
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
   res.json({ accessToken: accessToken });
 });
+function authenticateToken(req, res, nex) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader.split(" ")[1];
+}
 app.listen(3000, (req, res) => {
   //   res.Send("server is listenning on port 3000");
 });
